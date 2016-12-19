@@ -1,0 +1,10 @@
+= succeed "," do
+  %strong #{@reset_email.full_name}
+%br/
+%br/
+This email was sent to confirm that your email has been successfully changed to #{@reset_email.new_email}.
+If you did not recently reset your email address, or did not receive a confirmation message at your new address, please contact
+WellMatch Support at
+= succeed "." do
+  %a{href: "mailto:support@wellmatchhealth.com"}
+    %font{color: "#005280"} support@wellmatchhealth.com

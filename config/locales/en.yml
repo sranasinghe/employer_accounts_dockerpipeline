@@ -1,0 +1,30 @@
+en:
+  activemodel:
+    attributes:
+      reset_email: 
+        new_email:
+          one: "Email"
+        new_email_confirmation:
+          one: "Email Confirmation"
+    errors:
+      models: 
+        reset_password:
+          attributes:
+            base:
+              invalid_token: "Token is invalid" 
+            answer:
+              is_incorrect: "was incorrect"
+            email: 
+              address_not_found: "address was not found"
+              invalid_format: "format is invalid" 
+            password:
+              too_short: "was too short"
+              too_long: "was too long"
+              must_contain_uppercase: "must contain an upper case letter"
+              must_contain_number_or_symbol: "must contain a number or symbol"
+        reset_email:
+          attributes:
+            base:
+              member_not_found: "The member was not found"
+            new_email:
+              already_taken: "address is already taken"

@@ -1,0 +1,95 @@
+{
+  "family": "service",
+  "containerDefinitions": [
+    {
+      "name": "app",
+      "image": "registry.wellmatchhealth.com/employer-accounts:latest",
+      "cpu": 512,
+      "memory": 1024,
+      "entryPoint": [],
+      "command": ["/usr/local/bin/stack_exec", "bundle", "exec", "puma", "-C", "config/puma.rb", "-p", "8080"],
+      "portMappings": [
+      ],
+      "environment": [
+        {
+          "name": "RACK_ENV",
+          "value": ""
+        },
+        {
+          "name": "RAILS_ENV",
+          "value": ""
+        },
+        {
+          "name": "NEW_RELIC_LICENSE_KEY",
+          "value": ""
+        },
+        {
+          "name": "DATABASE_URL",
+          "value": ""
+        },
+        {
+          "name": "PLANS_DATABASE_URL",
+          "value": ""
+        },
+        {
+          "name": "BENEFITS_URL",
+          "value": ""
+        },
+        {
+          "name": "COVERAGE_STATUS_PATH",
+          "value": "/api/coverage_status"
+        },
+        {
+          "name": "JWT_SECRET",
+          "value": ""
+        },
+        {
+          "name": "BASE_64_ENCODED_CIPHER_KEY",
+          "value": ""
+        },
+        {
+          "name": "BASE_64_ENCODED_CIPHER_IV",
+          "value": ""
+        },
+        {
+          "name": "SECRET_KEY_BASE",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "name": "nginx",
+      "image": "registry.wellmatchhealth.com/newco-nginx-1.10.2:latest",
+      "cpu": 128,
+      "memory": 128,
+      "entryPoint": [],
+      "command": ["/usr/local/bin/stack_exec", "/usr/local/bin/docker-entrypoint.sh"],
+      "portMappings": [
+        {
+          "hostPort": 0,
+          "containerPort": 443,
+          "protocol": "tcp"
+        }
+      ],
+      "links": ["app:app"],
+      "environment": [
+        {
+          "name": "APP_HOST",
+          "value": "app"
+        },
+        {
+          "name": "APP_PORT",
+          "value": "8080"
+        },
+        {
+          "name": "TLS_CRT",
+          "value": ""
+        },
+        {
+          "name": "TLS_KEY",
+          "value": ""
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+FROM registry.wellmatchhealth.com/employer-accounts
+ENV PATH=/srv/app/docker/.gems/bin:$PATH
+RUN cd /srv/app && bundle config --delete without && bundle install

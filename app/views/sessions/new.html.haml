@@ -1,0 +1,22 @@
+.box
+  %h3
+    %b
+      Sign in
+    to WellMatch Health
+  %fieldset
+    = form_for :session, url: :sessions do
+      = text_field_tag :email, nil, {placeholder: 'Email'}
+      = password_field_tag :password, nil, {placeholder: 'Password'}
+      .forgot
+        %a{href: reset_password_url}
+          Forgot your log in?
+        %br/
+        %a{href: reset_email_url}
+          Reset email
+      = submit_tag "Sign In", class: :cta
+  %div
+    %p
+      Not a registered user?
+    %p
+      %a{href: new_member_path}
+        Register Now

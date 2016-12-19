@@ -1,0 +1,74 @@
+#!/bin/bash
+#############################################################################
+max_tries=30
+sleep_duration=1
+container_base_name=$(basename ${PWD} | sed s'/[_-]//g')
+
+name_usage () {
+printf "%s" "\
+usage: confirm_available [-h] SERVER_TYPES...
+  Ping services of the given types and exit non-zero if the service
+  is not available.
+options:
+  -d SECONDS  sleep duration ($sleep_duration)
+  -h          prints help
+  -n N        max tries ($max_tries)
+"
+}
+args=""
+while [ $OPTIND -le $# ]
+do
+  if getopts "d:hn:" option
+  then
+    case $option in
+      (d) sleep_duration="$OPTARG" ;;
+      (h) name_usage
+          exit 0 ;;
+      (n) max_tries="$OPTARG" ;;
+      (*) name_usage | head -n 1
+          exit 2 ;;
+    esac
+  else
+    args="$args \"\${$OPTIND}\""
+    OPTIND=$(($OPTIND + 1))
+  fi
+done
+eval set -- "$args"
+
+#############################################################################
+
+postgres_service_available () {
+  docker exec "$container_base_name"_postgres_1 \psql -U postgres --command 'select 1' > /dev/null 2>&1
+}
+for service in "$@"
+do
+  if ! command -v "$service"_available >/dev/null 2>&1
+  then
+    printf "unknown service: '$service'\n" >&2
+    exit 1
+  fi
+done
+
+for service in "$@"
+do
+  try=1
+
+  while [ "$try" -le "$max_tries" ]
+  do
+   printf "checking if '$service' is available (try %s of %s) ... " "$try" "$max_tries" >&2
+
+   if "$service"_available >&2
+   then
+     printf "available!\n" >&2
+     break
+   else
+     printf "unavailable.\n" >&2
+     try=$((try + 1))
+     sleep "$sleep_duration"
+   fi
+  done
+
+  if [ "$try" -gt "$max_tries" ]
+  then exit 1
+  fi
+done

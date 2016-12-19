@@ -1,0 +1,22 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  port: 5432
+  # For details on connection pooling, see rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: 5
+
+development:
+  <<: *default
+  url: <%= ENV.fetch('DATABASE_URL') %>_dev
+  min_messages: warning
+
+test: &test
+  <<: *default
+  url: <%= ENV.fetch('DATABASE_URL') %>_tst
+  min_messages: warning
+
+production:
+  <<: *default
+  url: <%= ENV.fetch('DATABASE_URL') %>
+  min_messages: warning

@@ -1,0 +1,81 @@
+development: &development
+  image: registry.wellmatchhealth.com/employer-accounts_dev
+  command: bundle exec rackup --host 0.0.0.0 -p 8000
+  links:
+    - postgres
+  volumes:
+    - .:/srv/app
+  ports:
+    - "10000:8000"
+  environment: &environment
+    RACK_ENV: development
+    RAILS_ENV: development
+    DATABASE_URL: postgres://postgres:password@postgres/accounts
+    PLANS_DATABASE_URL: postgresql://newco_app:tuifly999@db-proxy.prod.wellmatchhealth.com/newco_employer
+    BENEFITS_URL: https://benefits.prod.wellmatchhealth.com
+    COVERAGE_STATUS_PATH: /api/coverage_status
+    JWT_SECRET: eQdcrotwf29KTnsN
+    BASE_64_ENCODED_CIPHER_KEY: "qiIUKrqFQWTkWPA59wrsPw=="
+    BASE_64_ENCODED_CIPHER_IV: "ORT9Zue8LU5vs9v+j34dug=="
+    NEW_RELIC_LICENSE_KEY: Placeholder_value
+
+mock_development:
+  <<: *development
+  links:
+    - postgres
+    - mockapi
+  environment:
+    <<: *environment
+    BENEFITS_URL: http://mockapi:8080
+
+test:
+  <<: *development
+  environment:
+    <<: *environment
+    DATABASE_URL: postgres://postgres:password@postgres/accounts
+    RACK_ENV: test
+    RAILS_ENV: test
+
+postgres:
+  image: 'postgres:9.4'
+  environment:
+    POSTGRES_PASSWORD: password
+    POSTGRES_USER: postgres
+
+mockapi:
+  image: registry.wellmatchhealth.com/mock_api
+  ports:
+    - 8080
+  command: rackup -p 8080 -o0.0.0.0
+
+redis:
+  image: registry.wellmatchhealth.com/redis:2.4.10
+  volumes_from:
+    - redisdata
+  ports:
+    - 6379
+
+redisdata:
+  image: busybox:buildroot-2014.02
+  volumes:
+    - /data
+
+benefits:
+  image: registry.wellmatchhealth.com/benefits_dev:latest
+  command: bundle exec rackup -o0.0.0.0 -p 8080
+  links:
+    - redis
+  environment:
+    GEM_HOME: /srv/app/docker/.gems
+    WEB_CONCURRENCY: 1
+    REDIS_URL: redis://redis
+    POST_N_TRACK_ENDPOINT_BASE_URL:
+    POST_N_TRACK_ENDPOINT_ACCOUNT_TOKEN:
+    POST_N_TRACK_ENDPOINT_USERNAME:
+    POST_N_TRACK_ENDPOINT_PASSWORD:
+    POST_N_TRACK_ENDPOINT_PROVIDER_ID:
+    COINSURANCE_API_USERNAME:
+    COINSURANCE_API_PASSWORD:
+    ADMIN_API_USERNAME:
+    ADMIN_API_PASSWORD:
+    DATABASE_URL:

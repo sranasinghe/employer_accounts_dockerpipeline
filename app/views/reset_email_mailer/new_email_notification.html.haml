@@ -1,0 +1,8 @@
+= succeed "," do
+  %strong #{@reset_email.full_name}
+%br/
+%br/
+This email was sent to confirm that your email has been successfully changed.
+To login using your new email, please
+%br/
+= link_to 'click here.', new_session_url, :style=>'color:#005280;'

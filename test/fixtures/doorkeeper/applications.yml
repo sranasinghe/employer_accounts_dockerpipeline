@@ -1,0 +1,6 @@
+test:
+  name: Test Application
+  uid: 0c2850d97bfbab15913b130d8e4e29eafede3f6c947edadc996e8a7d57ef6b20 
+  secret: 3f124f6345972d11d789ee8eed001327db8debe4ec1a66a99590a71ec365c23c
+  redirect_uri: urn:ietf:wg:oauth:2.0:oob
+
